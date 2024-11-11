@@ -1,1 +1,0 @@
-const text = "testing ts";
