@@ -37,12 +37,23 @@ const logger = (req, res, next) => {
     console.log("req.hostname :>> ", req.hostname);
     next();
 };
-app.get("/", logger, (req, res) => {
-    console.log("req.query :>> ", req.query);
-    if (typeof req.query) {
-        console.log("empty object :>> ", req.query);
+app.get("/", logger, (req, res, next) => {
+    try {
+        console.log(data);
+        console.log("req.query :>> ", req.query);
+        if (typeof req.query) {
+            console.log("empty object :>> ", req.query);
+        }
+        res.send("hi World!");
     }
-    res.send("hi World!");
+    catch (error) {
+        next(error);
+        // console.log(error);
+        // res.status(400).json({
+        //   success: false,
+        //   message: "failed to get data",
+        // });
+    }
 });
 app.get("/:userId/:subId", logger, (req, res) => {
     console.log(req.params);
@@ -51,5 +62,23 @@ app.get("/:userId/:subId", logger, (req, res) => {
 app.post("/", logger, (req, res) => {
     console.log(req.body);
     res.json({ message: "successfully received data" });
+});
+// global route
+app.all("*", (req, res) => {
+    res.status(400).json({
+        success: false,
+        message: "Route is not found!",
+    });
+});
+// global error handler
+app.use((error, req, res, next) => {
+    console.log("global error");
+    console.log(error);
+    if (error) {
+        res.status(400).json({
+            success: false,
+            message: "Something went wrong",
+        });
+    }
 });
 exports.default = app;
