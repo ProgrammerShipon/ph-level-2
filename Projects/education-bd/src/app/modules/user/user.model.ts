@@ -1,14 +1,11 @@
-import { model, Schema } from "mongoose";
-import { TUser } from "./user.interface";
 import bcrypt from "bcrypt";
+import { model, Schema } from "mongoose";
 import config from "../../config";
+import { TUser } from "./user.interface";
 
 const userSchema = new Schema<TUser>(
   {
-    id: {
-      type: String,
-      required: true,
-    },
+    id: { type: String, unique: true, required: [true, "Id is required"] },
     password: {
       type: String,
       required: true,
@@ -36,9 +33,7 @@ const userSchema = new Schema<TUser>(
 );
 
 userSchema.pre("save", async function (next) {
-  console.log("call userSchema.pre");
   const user = this;
-  console.log("this user ", user);
 
   user.password = await bcrypt.hash(
     user.password,
@@ -49,7 +44,6 @@ userSchema.pre("save", async function (next) {
 });
 
 userSchema.post("save", function (doc, next) {
-  console.log("call userSchema.post ", doc);
   doc.password = "";
   next();
 });
