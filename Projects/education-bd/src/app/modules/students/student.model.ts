@@ -74,12 +74,22 @@ studentSchema.virtual("fullName").get(function () {
 
 // Query Middleware
 studentSchema.pre("find", function (next) {
-  this.find({ isDeleted: { $ne: true } });
+  try {
+    this.find({ isDeleted: { $ne: true } });
+    next();
+  } catch (err) {
+    throw new Error("Server Broken !");
+  }
 });
 
 // Query Middleware
 studentSchema.pre("findOne", function (next) {
-  this.find({ isDeleted: { $ne: true } });
+  try {
+    this.find({ isDeleted: { $ne: true } });
+    next();
+  } catch (err) {
+    throw new Error("Server Broken !");
+  }
 });
 
 studentSchema.pre("aggregate", function (next) {

@@ -28,7 +28,17 @@ const getAllStudents = async (
   next: NextFunction
 ) => {
   try {
-    // const result = await
+    console.log("getAllStudents");
+    const result = await studentService.getAllStudentDB();
+
+    console.log("result", result);
+
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "Student is retrieved succesfully",
+      data: result,
+    });
   } catch (err) {
     next(err);
   }
