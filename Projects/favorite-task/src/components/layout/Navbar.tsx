@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { ModeToggle } from "../ui/mode-toggle";
 
 export default function Navbar() {
   return (
@@ -15,6 +16,10 @@ export default function Navbar() {
       <Link to="/tasks" className="text-lg font-semibold">
         Tasks
       </Link>
+
+      <div className="ml-auto">
+        <ModeToggle />
+      </div>
     </nav>
   );
 }
