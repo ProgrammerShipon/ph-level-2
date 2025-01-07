@@ -2,6 +2,7 @@ import { ITask } from "@/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "@/redux/store";
 import { v4 as uuiv4 } from "uuid";
+import { deleteUser } from "../users/userSlice";
 
 type TFilter = "all" | "high" | "medium" | "low";
 interface InitialState {
@@ -17,6 +18,7 @@ const initialState: InitialState = {
       description: " task 1 description",
       dueDate: "2025-01-06T18:00:00.000Z",
       priority: "medium",
+      assignedTo: "lkl",
       isComplete: false,
     },
   ],
@@ -25,11 +27,16 @@ const initialState: InitialState = {
 
 export type TDraftTask = Pick<
   ITask,
-  "title" | "description" | "priority" | "dueDate"
+  "title" | "description" | "priority" | "dueDate" | "assignedTo"
 >;
 
 const createTask = (taskData: TDraftTask): ITask => {
-  return { id: uuiv4(), isComplete: false, ...taskData };
+  return {
+    ...taskData,
+    id: uuiv4(),
+    isComplete: false,
+    assignedTo: taskData.assignedTo ? taskData.assignedTo : null,
+  };
 };
 
 const taskSlice = createSlice({
@@ -52,6 +59,13 @@ const taskSlice = createSlice({
     updateFilter: (state, action: PayloadAction<TFilter>) => {
       state.filter = action.payload;
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(deleteUser, (state, action) => {
+      state.tasks.forEach((task) =>
+        task.assignedTo === action.payload ? (task.assignedTo = null) : task
+      );
+    });
   },
 });
 
