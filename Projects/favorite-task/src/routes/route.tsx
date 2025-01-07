@@ -15,6 +15,10 @@ const appRoutes = createBrowserRouter([
         element: <Tasks />,
       },
       {
+        path: "/tasks",
+        element: <Tasks />,
+      },
+      {
         path: "/users",
         element: <Users />,
       },
