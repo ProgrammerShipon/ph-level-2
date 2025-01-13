@@ -5,14 +5,13 @@ import Login from "../pages/Login";
 import Register from "../pages/Register.tsx";
 import { routeGenerator } from "../utils/routesGenerator.ts";
 import { adminPaths } from "./admin.routes";
-import { studentPaths } from "./student.routes.tsx";
 import { facultyPaths } from "./faculty.routes.tsx";
+import { studentPaths } from "./student.routes.tsx";
 
 const AppRouter = createBrowserRouter([
   {
     path: "/",
     element: <App />,
-    children: routeGenerator(adminPaths),
   },
   {
     path: "/admin",

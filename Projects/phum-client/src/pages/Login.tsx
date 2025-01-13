@@ -1,12 +1,15 @@
 import { Button } from "antd";
-import { useForm } from "react-hook-form";
+import { FieldValues, useForm } from "react-hook-form";
 import { useLoginMutation } from "../redux/features/auth/authApi";
 import { useAppDispatch } from "../redux/hooks";
-import { setUser } from "../redux/features/auth/authSlice";
+import { setUser, TUser } from "../redux/features/auth/authSlice";
 import { JwtDecoded } from "../utils/JwtDecoded";
+import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const { handleSubmit, register } = useForm({
     defaultValues: {
       userId: "A-0001",
@@ -15,18 +18,24 @@ export default function Login() {
   });
   const [login] = useLoginMutation();
 
-  const handleLogin = async (inputData) => {
+  const handleLogin = async (inputData: FieldValues) => {
+    const toastId = toast("Logging in");
+
     console.log(inputData);
-    const userInfo = {
-      id: inputData.userId,
-      password: inputData.password,
-    };
-    console.log(userInfo);
-    const res = await login(userInfo).unwrap();
-    const token = res.data.accessToken;
-    const user = JwtDecoded(token);
-    console.log({ user });
-    dispatch(setUser({ user, token }));
+    try {
+      const userInfo = {
+        id: inputData.userId,
+        password: inputData.password,
+      };
+      console.log(userInfo);
+      const res = await login(userInfo).unwrap();
+      const token = res.data.accessToken;
+      const user = JwtDecoded(token) as TUser;
+
+      dispatch(setUser({ user, token }));
+      navigate(`/${user.role}/dashboard`);
+      toast("Login Successfully", { id: toastId, duration: 2000 });
+    } catch (error) {}
   };
 
   return (
