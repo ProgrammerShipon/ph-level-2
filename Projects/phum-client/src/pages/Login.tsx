@@ -21,13 +21,12 @@ export default function Login() {
   const handleLogin = async (inputData: FieldValues) => {
     const toastId = toast("Logging in");
 
-    console.log(inputData);
     try {
       const userInfo = {
         id: inputData.userId,
         password: inputData.password,
       };
-      console.log(userInfo);
+
       const res = await login(userInfo).unwrap();
       const token = res.data.accessToken;
       const user = JwtDecoded(token) as TUser;
