@@ -13,7 +13,9 @@ export default function PHInput({ type, name, label }: TPHInputProps) {
       {label && <label id={name}>{label}</label>}
       <Controller
         name={name}
-        render={({ field }) => <Input {...field} type={type} id={name} />}
+        render={({ field }) => (
+          <Input {...field} type={type} id={name} size="large" />
+        )}
       />
     </div>
   );
