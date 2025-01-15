@@ -6,6 +6,7 @@ import {
 } from "react-hook-form";
 
 import { ReactNode } from "react";
+import { Form } from "antd";
 
 interface IPHFromProps {
   onSubmit: SubmitHandler<FieldValues>;
@@ -15,12 +16,14 @@ interface IPHFromProps {
 
 type TFormConfig = {
   defaultValues?: Record<string, any>;
+  resolver?: any;
 };
 
 export default function PHFrom({
   onSubmit,
   children,
   defaultValues,
+  resolver,
 }: IPHFromProps & TFormConfig) {
   const formConfig: TFormConfig = {};
 
@@ -28,11 +31,17 @@ export default function PHFrom({
     formConfig["defaultValues"] = defaultValues;
   }
 
+  if (resolver) {
+    formConfig["resolver"] = resolver;
+  }
+
   const methods = useForm(formConfig);
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={methods.handleSubmit(onSubmit)}>{children}</form>
+      <Form layout="vertical" onFinish={methods.handleSubmit(onSubmit)}>
+        {children}
+      </Form>
     </FormProvider>
   );
 }
