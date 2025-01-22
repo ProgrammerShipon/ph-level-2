@@ -114,6 +114,7 @@ const StudentData = () => {
         onChange={onChange}
         pagination={false}
       />
+
       <Pagination
         current={page}
         onChange={(value) => setPage(value)}
