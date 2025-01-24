@@ -27,8 +27,6 @@ export default function CreateAcademicDepartment() {
   const [addAcademicDepartment] = useAddAcademicDepartmentMutation(undefined);
 
   const onSubmit = async (data: any) => {
-    console.log("submit data ", data);
-
     try {
       await addAcademicDepartment(data).unwrap();
       toast.success("Academic department created successfully");

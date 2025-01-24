@@ -9,6 +9,8 @@ import {
   useGetAcademicDepartmentsQuery,
   useGetAllSemestersQuery,
 } from "../../../redux/features/admin/academicManagement.api";
+import { useAddStudentMutation } from "../../../redux/features/admin/userManagement.api";
+import { toast } from "sonner";
 
 const studentDummyData = {
   password: "student123",
@@ -81,6 +83,7 @@ const studentDefaultValues = {
 
 //! this is only for development
 export default function CreateStudent() {
+  const [addStudent] = useAddStudentMutation(undefined);
   const { data: sData, isLoading: sIsLoading } =
     useGetAllSemestersQuery(undefined);
   const { data: dData, isLoading: dIsLoading } = useGetAcademicDepartmentsQuery(
@@ -89,7 +92,6 @@ export default function CreateStudent() {
       // skip: sIsLoading,
     }
   );
-  console.log("sData ", sIsLoading, sData);
 
   const semesterOptions = sData?.data?.map((item) => ({
     value: item._id,
@@ -100,11 +102,24 @@ export default function CreateStudent() {
     label: item.name,
   }));
 
-  const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    console.log("studentDefaultValues ", studentDefaultValues);
+  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     console.log("form data ", data);
-    // const formData = new FormData();
-    // formData.append("data", JSON.stringify(data));
+    const studentData = {
+      password: "student123",
+      student: data,
+    };
+    const formData = new FormData();
+    formData.append("data", JSON.stringify(studentData));
+    formData.append("file", data.image);
+
+    try {
+      const result = await addStudent(formData).unwrap();
+      console.log("result", result);
+      toast.success("Student created successfully");
+    } catch (error) {
+      console.log("error", error);
+      toast.error("Failed to create student");
+    }
   };
 
   return (
@@ -134,6 +149,9 @@ export default function CreateStudent() {
                 options={bloodGroupOptions}
                 label="Blood Group"
               />
+            </Col>
+            <Col span={24} md={{ span: 12 }} lg={{ span: 8 }}>
+              <PHInput type="file" name="image" label="Picture" />
             </Col>
           </Row>
 
